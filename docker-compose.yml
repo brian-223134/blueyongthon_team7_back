@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      context: ./project
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      # Hackathon-friendly: live code edit + persist sqlite/secrets on host
+      - ./project:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - PYTHONUNBUFFERED=1
+      - DEBUG=1
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - SECRET_FILE=/app/secrets.json

@@ -1,0 +1,29 @@
+services:
+  web:
+    build:
+      context: ./project
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - PYTHONUNBUFFERED=1
+
+      # Remote/prod-like defaults
+      - DEBUG=0
+      # Set to your domain/IP in the server
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+
+      # Keep secrets out of the image
+      - SECRET_FILE=/run/secrets/secrets.json
+
+      # Persist sqlite DB in a named volume
+      - SQLITE_PATH=/data/db.sqlite3
+    volumes:
+      - db_data:/data
+      - ./project/secrets.json:/run/secrets/secrets.json:ro
+    command: >
+      sh -c "poetry run python manage.py migrate && poetry run gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2"
+
+volumes:
+  db_data:

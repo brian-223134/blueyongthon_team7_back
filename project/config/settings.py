@@ -11,32 +11,33 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-
-from pathlib import Path
 import os, json
 from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-secret_file = os.path.join(BASE_DIR, 'secrets.json') 
+SECRET_FILE = os.environ.get("SECRET_FILE", os.path.join(BASE_DIR, "secrets.json"))
+_secrets: dict = {}
+if SECRET_FILE and os.path.exists(SECRET_FILE):
+    with open(SECRET_FILE, encoding="utf-8") as f:
+        _secrets = json.loads(f.read())
 
-with open(secret_file) as f:
-    secrets = json.loads(f.read())
 
-def get_secret(setting, secrets=secrets): 
-# secret 변수를 가져오거나 그렇지 못 하면 예외를 반환
+def get_secret(setting: str, secrets: dict = _secrets) -> str:
     try:
         return secrets[setting]
     except KeyError:
         error_msg = "Set the {} environment variable".format(setting)
         raise ImproperlyConfigured(error_msg)
 
-SECRET_KEY = get_secret("SECRET_KEY")
 
-DEBUG = True
+SECRET_KEY = os.environ.get("SECRET_KEY") or get_secret("SECRET_KEY")
 
-ALLOWED_HOSTS = []
+DEBUG = os.environ.get("DEBUG", "1").strip().lower() in {"1", "true", "yes", "on"}
+
+_allowed_hosts_raw = os.environ.get("ALLOWED_HOSTS", "")
+ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts_raw.split(",") if h.strip()]
 
 
 # Application definition
@@ -96,7 +97,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.environ.get('SQLITE_PATH') or (BASE_DIR / 'db.sqlite3'),
     }
 }
 
