@@ -55,6 +55,7 @@ DJANGO_APPS = [
 
 PROJECT_APPS = [
     # 'your_project_apps',
+    'accounts',
 ]
 
 THIRD_PARTY_APPS = [
@@ -62,6 +63,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "rest_framework",
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'drf_yasg',
 ]
 
@@ -165,5 +167,4 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),    # 유효기간 7일
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
-    'TOKEN_USER_CLASS': 'accounts.User',
 }
