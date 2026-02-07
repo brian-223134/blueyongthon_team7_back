@@ -10,6 +10,19 @@ from drf_yasg import openapi
 from rest_framework import status
 
 
+class RecipeSharedView(APIView):
+    @swagger_auto_schema(
+        operation_description="공유된 모든 레시피를 조회합니다.",
+        responses={
+            200: RecipeSerializer(many=True),
+        }
+    )
+    def get(self, request):
+        shared_recipes = Recipe.objects.filter(is_shared=True)
+        serializer = RecipeSerializer(shared_recipes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 class RecipeView(APIView):
     permission_classes = [IsAuthenticated]
