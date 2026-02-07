@@ -22,6 +22,24 @@ class RecipeSharedView(APIView):
         serializer = RecipeSerializer(shared_recipes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class RecipeSharedDetailView(APIView):
+
+    @swagger_auto_schema(
+        operation_description="공유된 레시피 중 하나를 선택하여 조회합니다.",
+        responses={
+            200: RecipeSerializer,
+            404: 'Not Found'
+        }
+    )
+    def get(self, request, pk):
+        try:
+            recipe = Recipe.objects.get(pk=pk, is_shared=True)
+        except Recipe.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = RecipeSerializer(recipe)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
 
 
 class RecipeView(APIView):
@@ -127,6 +145,7 @@ class RecipeDetailView(APIView):
         recipe.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+
 
 
 
