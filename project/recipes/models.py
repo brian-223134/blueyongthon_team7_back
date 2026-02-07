@@ -21,5 +21,5 @@ class RecipeSteps(models.Model):
     guide = models.CharField(max_length=64)
 
     def __str__(self):
-        return f"Step {self.step_number} for {self.recipe_id.name}"
+        return f"{self.recipe_id.name} - {self.time}s / {self.amount}ml"
     
