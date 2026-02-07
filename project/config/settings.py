@@ -58,6 +58,7 @@ PROJECT_APPS = [
 THIRD_PARTY_APPS = [
     # 'your_third_party_apps',
     "corsheaders",
+    "rest_framework",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
