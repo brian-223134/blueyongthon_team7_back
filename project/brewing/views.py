@@ -35,6 +35,11 @@ class BrewingHistoryView(generics.ListCreateAPIView):
         }
     )
     def post(self, request, *args, **kwargs):
+        if 'recipe_id' not in request.data:
+            return Response(
+                {'recipe_id': ['This field is required.']},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user_id=request.user)
