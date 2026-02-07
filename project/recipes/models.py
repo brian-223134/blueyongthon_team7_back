@@ -6,6 +6,9 @@ class Recipe(models.Model):
     name = models.CharField(max_length=32)
     description = models.TextField()
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    temperature = models.IntegerField(default=0, null=False)
+    grind_size = models.IntegerField(default=0, null=False)
+    bean_weight = models.IntegerField(default=0, null=False)
     is_shared = models.BooleanField(default=False)
 
     def __str__(self):
